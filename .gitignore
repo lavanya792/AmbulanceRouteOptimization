@@ -22,3 +22,6 @@ backend/*.o
 
 # Logs
 *.log
+
+# OpenStreetMap / OSMnx cache
+cache/
