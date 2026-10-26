@@ -4,166 +4,171 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>ResQ Route | Ambulance Route Optimization</title>
-
-    <!-- Existing dashboard styles -->
+    <title>Vitalane | Emergency Route Command</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="/style.css">
-
-    <!-- Leaflet map styles -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-
-    <!-- Leaflet map library -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
 
 <body>
-
-    <!-- Header -->
-    <header class="topbar">
-        <div class="brand">
-            <span class="brand-icon">🚑</span>
-
-            <div>
-                <h1>ResQ Route</h1>
-                <p>Ambulance Route Optimization System</p>
-            </div>
-        </div>
-
-        <span class="status">
-            <span class="status-dot"></span>
-            SYSTEM ONLINE
-        </span>
-    </header>
-
-    <!-- Dashboard -->
-    <main class="dashboard">
-
-        <!-- Route controls -->
-        <section class="panel controls">
-
-            <h2>Route Configuration</h2>
-            <p class="subtitle">
-                Configure your emergency response route.
-            </p>
-
-            <label for="source">Ambulance Starting Point</label>
-            <select id="source">
-                <option value="">Select starting location</option>
-            </select>
-
-            <label for="destination">Emergency Destination</label>
-            <select id="destination">
-                <option value="">Select destination</option>
-            </select>
-
-            <label for="algorithm">Routing Algorithm</label>
-            <select id="algorithm">
-                <option value="dijkstra">Dijkstra's Algorithm</option>
-                <option value="astar">A* Search</option>
-                <option value="bellman_ford">Bellman-Ford Algorithm</option>
-            </select>
-
-            <button id="findRoute" class="primary-btn">
-                Find Optimal Route →
-            </button>
-
-            <hr>
-
-            <!-- Minimum spanning tree -->
-            <h3>Minimum Spanning Tree</h3>
-
-            <p class="subtitle">
-                Explore the minimum-cost road network.
-            </p>
-
-            <select id="mstAlgorithm">
-                <option value="prim">Prim's Algorithm</option>
-                <option value="kruskal">Kruskal's Algorithm</option>
-            </select>
-
-            <button id="showMST" class="secondary-btn">
-                Generate MST
-            </button>
-
-            <button id="reset" class="reset-btn">
-                Reset Map
-            </button>
-
-        </section>
-
-        <!-- Real geographical map -->
-        <section class="map-panel">
-
-            <div class="map-heading">
+    <div class="shell">
+        <aside class="dock">
+            <header class="brand">
+                <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true">
+                    <circle cx="20" cy="20" r="18" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-dasharray="86 27" stroke-linecap="round" transform="rotate(-90 20 20)" />
+                    <path d="M20 10v20M10 20h20" stroke="currentColor" stroke-width="4" stroke-linecap="round" />
+                </svg>
                 <div>
-                    <h2>Emergency Road Network</h2>
-                    <p class="subtitle">
-                        Real-world road map
-                    </p>
+                    <h1>Vitalane</h1>
+                    <p>Emergency route command</p>
                 </div>
+                <span class="live" title="Road network system online"><i></i>Live</span>
+            </header>
 
-                <span class="map-badge" id="mapBadge">
-                    FARIDABAD, HARYANA
-                </span>
+            <nav class="tabs" role="tablist" aria-label="Tools">
+                <button class="tab is-active" role="tab" data-tab="route" aria-selected="true"
+                    type="button">Route</button>
+                <button class="tab" role="tab" data-tab="mst" aria-selected="false" type="button">Spanning tree</button>
+                <button class="tab" role="tab" data-tab="layers" aria-selected="false" type="button">Layers</button>
+            </nav>
+
+            <div class="tab-body">
+                <!-- ROUTE -->
+                <section class="pane is-active" id="pane-route" role="tabpanel">
+                    <p class="hint">Click the map to place the start, then the destination. Or drag the pins.</p>
+
+                    <div class="trip">
+                        <div class="trip-rail" aria-hidden="true"><i class="pin-s"></i><b></b><i class="pin-d"></i>
+                        </div>
+                        <div class="trip-fields">
+                            <label for="source">Ambulance start</label>
+                            <select id="source">
+                                <option value="">Select starting location</option>
+                            </select>
+                            <label for="destination">Emergency destination</label>
+                            <select id="destination">
+                                <option value="">Select destination</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <label for="algorithm">Routing algorithm</label>
+                    <select id="algorithm">
+                        <option value="dijkstra">Dijkstra's algorithm</option>
+                        <option value="astar">A* search</option>
+                        <option value="bellman_ford">Bellman-Ford algorithm</option>
+                    </select>
+
+                    <button id="findRoute" class="btn btn-go" type="button">Find fastest route</button>
+                    <button id="replayAmbulance" class="btn btn-ghost" type="button" disabled>Replay ambulance</button>
+                </section>
+
+                <!-- MST -->
+                <section class="pane" id="pane-mst" role="tabpanel" hidden>
+                    <p class="hint">Draw a rectangle over Faridabad and find the cheapest set of roads that keeps every
+                        junction inside it connected.</p>
+
+                    <label for="mstAlgorithm">MST algorithm</label>
+                    <select id="mstAlgorithm">
+                        <option value="prim">Prim's algorithm</option>
+                        <option value="kruskal">Kruskal's algorithm</option>
+                    </select>
+
+                    <button id="selectMSTArea" class="btn btn-dark" type="button">Select MST area</button>
+                    <p id="mstAreaStatus" class="note" aria-live="polite">Select an area, then click two opposite
+                        corners on the map.</p>
+                    <button id="showMST" class="btn btn-go" type="button">Generate area MST</button>
+                    <button id="clearMSTArea" class="btn btn-ghost" type="button">Clear MST area</button>
+
+                    <dl class="results">
+                        <div>
+                            <dt>Junctions in area</dt>
+                            <dd id="mstNodeCount">—</dd>
+                        </div>
+                        <div>
+                            <dt>MST / forest edges</dt>
+                            <dd id="mstEdgeCount">—</dd>
+                        </div>
+                        <div>
+                            <dt>Total connection length</dt>
+                            <dd id="mstTotalWeight">—</dd>
+                        </div>
+                        <div>
+                            <dt>Algorithm</dt>
+                            <dd id="mstResultAlgorithm">—</dd>
+                        </div>
+                    </dl>
+                </section>
+
+                <!-- LAYERS -->
+                <section class="pane" id="pane-layers" role="tabpanel" hidden>
+                    <label class="switch"><input id="toggleNodes" type="checkbox" checked><span></span>Show road
+                        nodes</label>
+                    <label class="switch"><input id="toggleRoads" type="checkbox" checked><span></span>Show road
+                        connections</label>
+                    <p class="note">Nodes appear automatically once you zoom in to level 14 or closer.</p>
+
+                    <dl class="results">
+                        <div>
+                            <dt>Road nodes</dt>
+                            <dd id="totalNodes">—</dd>
+                        </div>
+                        <div>
+                            <dt>Directed connections</dt>
+                            <dd id="totalEdges">—</dd>
+                        </div>
+                        <div>
+                            <dt>Map zoom</dt>
+                            <dd id="zoomLevel">14</dd>
+                        </div>
+                        <div>
+                            <dt>Network</dt>
+                            <dd id="networkStatus">Loading...</dd>
+                        </div>
+                    </dl>
+
+                    <button id="reset" class="btn btn-ghost" type="button">Reset map</button>
+                </section>
             </div>
 
-            <!-- Leaflet will render the map inside this element -->
+            <footer class="legend">
+                <span><i class="lg lg-node"></i>Road node</span>
+                <span><i class="lg lg-road"></i>Road</span>
+                <span><i class="lg lg-route"></i>Route</span>
+                <span><i class="lg lg-mst"></i>MST</span>
+                <span>🚑 Ambulance</span>
+            </footer>
+        </aside>
+
+        <main class="stage">
             <div id="mapContainer" role="application" aria-label="Interactive road map of Faridabad"></div>
 
-            <!-- Map legend -->
-            <div class="legend">
-                <span>
-                    <i class="legend-line"></i>
-                    Road Network
-                </span>
-
-                <span>
-                    <i class="legend-line route-line"></i>
-                    Optimal Route
-                </span>
-
-                <span>
-                    🚑 Ambulance
-                </span>
+            <div class="chip-top">
+                <span>Faridabad, Haryana</span>
+                <span>Algorithm <strong id="selectedAlgorithm">Dijkstra</strong></span>
             </div>
 
-            <div id="message" class="message" aria-live="polite">
-                Loading map...
-            </div>
+            <div id="message" class="toast" aria-live="polite">Initializing map...</div>
 
-        </section>
-
-        <!-- Route statistics -->
-        <section class="stats">
-
-            <div class="stat-card">
-                <p>Route Distance / Cost</p>
-                <h2 id="routeCost">—</h2>
-            </div>
-
-            <div class="stat-card">
-                <p>Nodes Explored</p>
-                <h2 id="nodesExplored">—</h2>
-            </div>
-
-            <div class="stat-card">
-                <p>Execution Time</p>
-                <h2 id="executionTime">—</h2>
-            </div>
-
-            <div class="stat-card">
-                <p>Route Status</p>
-                <h2 id="routeStatus">Ready</h2>
-            </div>
-
-        </section>
-
-    </main>
-
-    <!-- Existing JavaScript -->
+            <section class="telemetry" aria-label="Route telemetry">
+                <div class="eta">
+                    <span class="k">Estimated arrival</span>
+                    <span class="v"><b id="etaValue">—</b></span>
+                </div>
+                <div><span class="k">Route distance</span><span class="v" id="routeCost">—</span></div>
+                <div><span class="k">Nodes explored</span><span class="v" id="nodesExplored">—</span></div>
+                <div><span class="k">Execution time</span><span class="v" id="executionTime">—</span></div>
+                <div><span class="k">Status</span><span class="v status-v" id="routeStatus">Ready</span></div>
+            </section>
+        </main>
+    </div>
     <script src="/script.js"></script>
-
 </body>
 
 </html>
