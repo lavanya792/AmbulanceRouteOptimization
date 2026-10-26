@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ResQ Route | Ambulance Route Optimization</title>
+
+    <!-- Existing dashboard styles -->
+    <link rel="stylesheet" href="/style.css">
+
+    <!-- Leaflet map styles -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+    <!-- Leaflet map library -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header class="topbar">
+        <div class="brand">
+            <span class="brand-icon">🚑</span>
+
+            <div>
+                <h1>ResQ Route</h1>
+                <p>Ambulance Route Optimization System</p>
+            </div>
+        </div>
+
+        <span class="status">
+            <span class="status-dot"></span>
+            SYSTEM ONLINE
+        </span>
+    </header>
+
+    <!-- Dashboard -->
+    <main class="dashboard">
+
+        <!-- Route controls -->
+        <section class="panel controls">
+
+            <h2>Route Configuration</h2>
+            <p class="subtitle">
+                Configure your emergency response route.
+            </p>
+
+            <label for="source">Ambulance Starting Point</label>
+            <select id="source">
+                <option value="">Select starting location</option>
+            </select>
+
+            <label for="destination">Emergency Destination</label>
+            <select id="destination">
+                <option value="">Select destination</option>
+            </select>
+
+            <label for="algorithm">Routing Algorithm</label>
+            <select id="algorithm">
+                <option value="dijkstra">Dijkstra's Algorithm</option>
+                <option value="astar">A* Search</option>
+                <option value="bellman_ford">Bellman-Ford Algorithm</option>
+            </select>
+
+            <button id="findRoute" class="primary-btn">
+                Find Optimal Route →
+            </button>
+
+            <hr>
+
+            <!-- Minimum spanning tree -->
+            <h3>Minimum Spanning Tree</h3>
+
+            <p class="subtitle">
+                Explore the minimum-cost road network.
+            </p>
+
+            <select id="mstAlgorithm">
+                <option value="prim">Prim's Algorithm</option>
+                <option value="kruskal">Kruskal's Algorithm</option>
+            </select>
+
+            <button id="showMST" class="secondary-btn">
+                Generate MST
+            </button>
+
+            <button id="reset" class="reset-btn">
+                Reset Map
+            </button>
+
+        </section>
+
+        <!-- Real geographical map -->
+        <section class="map-panel">
+
+            <div class="map-heading">
+                <div>
+                    <h2>Emergency Road Network</h2>
+                    <p class="subtitle">
+                        Real-world road map
+                    </p>
+                </div>
+
+                <span class="map-badge" id="mapBadge">
+                    FARIDABAD, HARYANA
+                </span>
+            </div>
+
+            <!-- Leaflet will render the map inside this element -->
+            <div id="mapContainer" role="application" aria-label="Interactive road map of Faridabad"></div>
+
+            <!-- Map legend -->
+            <div class="legend">
+                <span>
+                    <i class="legend-line"></i>
+                    Road Network
+                </span>
+
+                <span>
+                    <i class="legend-line route-line"></i>
+                    Optimal Route
+                </span>
+
+                <span>
+                    🚑 Ambulance
+                </span>
+            </div>
+
+            <div id="message" class="message" aria-live="polite">
+                Loading map...
+            </div>
+
+        </section>
+
+        <!-- Route statistics -->
+        <section class="stats">
+
+            <div class="stat-card">
+                <p>Route Distance / Cost</p>
+                <h2 id="routeCost">—</h2>
+            </div>
+
+            <div class="stat-card">
+                <p>Nodes Explored</p>
+                <h2 id="nodesExplored">—</h2>
+            </div>
+
+            <div class="stat-card">
+                <p>Execution Time</p>
+                <h2 id="executionTime">—</h2>
+            </div>
+
+            <div class="stat-card">
+                <p>Route Status</p>
+                <h2 id="routeStatus">Ready</h2>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Existing JavaScript -->
+    <script src="/script.js"></script>
+
+</body>
+
+</html>
