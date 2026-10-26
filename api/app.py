@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 from pathlib import Path
 from functools import lru_cache
 import subprocess
@@ -16,6 +17,16 @@ app = Flask(
     __name__,
     static_folder=str(FRONTEND),
     static_url_path=""
+)
+CORS(
+    app,
+    resources={
+        r"/api/*": {
+            "origins": [
+                "https://lavanya792.github.io"
+            ]
+        }
+    }
 )
 SOURCES = [
     "main.c",

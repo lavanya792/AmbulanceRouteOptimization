@@ -1,0 +1,10 @@
+.git
+.github
+.venv
+.venv-1
+venv
+__pycache__
+*.pyc
+.env
+.DS_Store
+backend/ambulance_cli
